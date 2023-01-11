@@ -1,0 +1,23 @@
+{
+  "tabWidth": 2,
+  "overrides": [
+    {
+      "files": "*.css",
+      "options": {
+        "tabWidth": 2
+      }
+    },
+    {
+      "files": "*.scss",
+      "options": {
+        "tabWidth": 2
+      }
+    },
+    {
+      "files": "*.js",
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ]
+}
