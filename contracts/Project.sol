@@ -161,72 +161,6 @@ contract Project {
     emit RefundRequestSuccessful(refundAmount);
   }
 
-  // @dev Request contributor for withdraw amount
-  // @return null
-
-  function createWithdrawRequest(
-    string memory _description,
-    uint256 _amount,
-    address payable _reciptent
-  ) public isCreator validateExpiry(State.Successful) {
-    WithdrawRequest storage newRequest = withdrawRequests[
-      numOfWithdrawRequests
-    ];
-    numOfWithdrawRequests++;
-
-    newRequest.description = _description;
-    newRequest.amount = _amount;
-    newRequest.noOfVotes = 0;
-    newRequest.isCompleted = false;
-    newRequest.reciptent = _reciptent;
-
-    emit WithdrawRequestCreated(
-      numOfWithdrawRequests,
-      _description,
-      _amount,
-      0,
-      false,
-      _reciptent
-    );
-  }
-
-  // @dev contributors can vote for withdraw request
-  // @return null
-
-  function voteWithdrawRequest(uint256 _requestId) public {
-    require(contributiors[msg.sender] > 0, "Only contributor can vote !");
-    WithdrawRequest storage requestDetails = withdrawRequests[_requestId];
-    require(requestDetails.voters[msg.sender] == false, "You already voted !");
-    requestDetails.voters[msg.sender] = true;
-    requestDetails.noOfVotes += 1;
-    emit WithdrawVote(msg.sender, requestDetails.noOfVotes);
-  }
-
-  // @dev Owner can withdraw requested amount
-  // @return null
-
-  function withdrawRequestedAmount(
-    uint256 _requestId
-  ) public isCreator validateExpiry(State.Successful) {
-    WithdrawRequest storage requestDetails = withdrawRequests[_requestId];
-    require(requestDetails.isCompleted == false, "Request already completed");
-    require(
-      requestDetails.noOfVotes >= noOfContributers / 2,
-      "At least 50% contributor need to vote for this request"
-    );
-    requestDetails.reciptent.transfer(requestDetails.amount);
-    requestDetails.isCompleted = true;
-
-    emit AmountWithdrawSuccessful(
-      _requestId,
-      requestDetails.description,
-      requestDetails.amount,
-      requestDetails.noOfVotes,
-      true,
-      requestDetails.reciptent
-    );
-  }
-
   // @dev Get contract details
   // @return all the project's details
 
@@ -256,5 +190,70 @@ contract Project {
     desc = projectDes;
     currentState = state;
     balance = address(this).balance;
+  }
+
+  // @dev Request contributor for withdraw amount
+  // @return null
+
+  function createWithdrawRequest(
+    string memory _description,
+    uint256 _amount,
+    address payable _reciptent
+  ) public isCreator validateExpiry(State.Successful) {
+    WithdrawRequest storage newRequest = withdrawRequests[
+      numOfWithdrawRequests
+    ];
+    numOfWithdrawRequests++;
+
+    newRequest.description = _description;
+    newRequest.amount = _amount;
+    newRequest.noOfVotes = 0;
+    newRequest.isCompleted = false;
+    newRequest.reciptent = _reciptent;
+
+    emit WithdrawRequestCreated(
+      numOfWithdrawRequests,
+      _description,
+      _amount,
+      0,
+      false,
+      _reciptent
+    );
+  }
+
+  // @dev Owner can withdraw requested amount
+  // @return null
+  function withdrawRequestedAmount(
+    uint256 _requestId
+  ) public isCreator validateExpiry(State.Successful) {
+    WithdrawRequest storage requestDetails = withdrawRequests[_requestId];
+    require(requestDetails.isCompleted == false, "Request already completed");
+    require(
+      requestDetails.noOfVotes >= noOfContributers / 2,
+      "At least 50% contributor need to vote for this request"
+    );
+    requestDetails.reciptent.transfer(requestDetails.amount);
+    requestDetails.isCompleted = true;
+
+    emit AmountWithdrawSuccessful(
+      _requestId,
+      requestDetails.description,
+      requestDetails.amount,
+      requestDetails.noOfVotes,
+      true,
+      requestDetails.reciptent
+    );
+  }
+
+  // @dev contributors can vote for withdraw request
+  // @return null
+
+  function voteWithdrawRequest(uint256 _requestId) public {
+    require(contributiors[msg.sender] > 0, "Only contributor can vote !");
+    WithdrawRequest storage requestDetails = withdrawRequests[_requestId];
+    require(requestDetails.voters[msg.sender] == false, "You already voted !");
+    requestDetails.voters[msg.sender] = true;
+    requestDetails.noOfVotes += 1;
+    emit WithdrawVote(msg.sender, requestDetails.noOfVotes);
   }
 }
