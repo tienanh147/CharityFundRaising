@@ -63,3 +63,14 @@ export const chainOrAccountChangedHandler = () => {
   // reload the page to avoid any errors with chain or account change.
   window.location.reload();
 }
+
+export const withdrawRequestDataFormatter = (data) =>{
+  return{
+     requestId:data.requestId,
+     totalVote:data.noOfVotes,
+     amount:weiToEther(data.amount),
+     status:data.isCompleted?"Completed":"Pending",
+     desc:data.description,
+     reciptant:data.reciptent
+    }
+}

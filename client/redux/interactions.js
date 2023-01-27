@@ -4,6 +4,7 @@ import CharityFunding from "../artifacts/contracts/CharityFunding.sol/CharityFun
 import Project from "../artifacts/contracts/Project.sol/Project.json";
 import {
   projectDataFormatter,
+  withdrawRequestDataFormatter,
 } from "../helper/helper";
 
 const charityFundingContractAddress =
@@ -148,3 +149,30 @@ export const contribute = async (
     });
 };
 
+
+// Request for withdraw amount
+export const createWithdrawRequest = async (
+  web3,
+  contractAddress,
+  data,
+  onSuccess,
+  onError
+) => {
+  const { description, amount, recipient, account } = data;
+  var projectConnector = new web3.eth.Contract(Project.abi, contractAddress);
+  await projectConnector.methods
+    .createWithdrawRequest(description, amount, recipient)
+    .send({ from: account })
+    .on("receipt", function (receipt) {
+      const withdrawReqReceipt =
+        receipt.events.WithdrawRequestCreated.returnValues;
+      const formattedReqData = withdrawRequestDataFormatter(
+        withdrawReqReceipt,
+        withdrawReqReceipt.requestId
+      );
+      onSuccess(formattedReqData);
+    })
+    .on("error", function (error) {
+      onError(error.message);
+    });
+};
