@@ -176,3 +176,29 @@ export const createWithdrawRequest = async (
       onError(error.message);
     });
 };
+
+// Get all withdraw request
+export const getAllWithdrawRequest = async (
+  web3,
+  contractAddress,
+  onLoadRequest
+) => {
+  var projectConnector = new web3.eth.Contract(Project.abi, contractAddress);
+  var withdrawRequestCount = await projectConnector.methods
+    .numOfWithdrawRequests()
+    .call();
+  var withdrawRequests = [];
+
+  if (withdrawRequestCount <= 0) {
+    onLoadRequest(withdrawRequests);
+    return;
+  }
+
+  for (var i = 1; i <= withdrawRequestCount; i++) {
+    const req = await projectConnector.methods.withdrawRequests(i - 1).call();
+    withdrawRequests.push(
+      withdrawRequestDataFormatter({ ...req, requestId: i - 1 })
+    );
+  }
+  onLoadRequest(withdrawRequests);
+};

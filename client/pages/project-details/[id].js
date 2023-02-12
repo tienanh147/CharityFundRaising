@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux'
 import FundRiserCard from '../../components/FundRiserCard'
 import Loader from '../../components/Loader'
 import authWrapper from '../../helper/authWrapper'
+import { getAllWithdrawRequest } from '../../redux/interactions'
+import WithdrawRequestCard from '../../components/WithdrawRequestCard'
 
 
 const ProjectDetails = () => {
@@ -57,8 +59,7 @@ const ProjectDetails = () => {
                   <h1 className="font-sans text-xl text-gray font-semibold">Withdraw requests</h1>
                   {
                     withdrawReq.map((data,i)=>(
-                      <div> data </div>
-                      // <WithdrawRequestCard props={data} withdrawReq={withdrawReq} setWithdrawReq={setWithdrawReq} contractAddress={id} key={i}/>
+                      <WithdrawRequestCard props={data} withdrawReq={withdrawReq} setWithdrawReq={setWithdrawReq} contractAddress={id} key={i}/>
                     ))
                   }
                   
