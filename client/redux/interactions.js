@@ -202,3 +202,19 @@ export const getAllWithdrawRequest = async (
   }
   onLoadRequest(withdrawRequests);
 };
+
+// Vote for withdraw request
+export const voteWithdrawRequest = async (web3, data, onSuccess, onError) => {
+  const { contractAddress, reqId, account } = data;
+  var projectConnector = new web3.eth.Contract(Project.abi, contractAddress);
+  await projectConnector.methods
+    .voteWithdrawRequest(reqId)
+    .send({ from: account })
+    .on("receipt", function (receipt) {
+      console.log(receipt);
+      onSuccess();
+    })
+    .on("error", function (error) {
+      onError(error.message);
+    });
+};
