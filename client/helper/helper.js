@@ -74,3 +74,20 @@ export const withdrawRequestDataFormatter = (data) =>{
      reciptant:data.reciptent
     }
 }
+
+
+const formatContribution = (contributions) =>{
+  const formattedData = contributions.map(data=>{
+    return {
+      contributor:data.returnValues.contributor,
+      amount:Number(weiToEther(data.returnValues.amount))
+    }
+  })
+  return formattedData;
+}
+
+export const groupContributors = (contributions) => {
+  const contributorList = formatContribution(contributions);
+  const contributorGroup = _.map(_.groupBy(contributorList, 'contributor'), (o,address) => { return { contributor: address,amount: _.sumBy(o,'amount') }})
+  return contributorGroup;
+}

@@ -5,6 +5,7 @@ import Project from "../artifacts/contracts/Project.sol/Project.json";
 import {
   projectDataFormatter,
   withdrawRequestDataFormatter,
+  groupContributors,
 } from "../helper/helper";
 
 const charityFundingContractAddress =
@@ -121,8 +122,6 @@ export const getAllFunding = async (CharityFundingContract, web3, dispatch) => {
   dispatch(actions.projectsLoaded(projects));
 };
 
-
-
 // Contribute in fund raising project
 export const contribute = async (
   charityFundingContract,
@@ -148,7 +147,6 @@ export const contribute = async (
       onError(error.message);
     });
 };
-
 
 // Request for withdraw amount
 export const createWithdrawRequest = async (
@@ -245,4 +243,25 @@ export const withdrawAmount = async (
     .on("error", function (error) {
       onError(error.message);
     });
+};
+
+export const getContributors = async (
+  web3,
+  contractAddress,
+  onSuccess,
+  onError
+) => {
+  try {
+    var projectConnector = new web3.eth.Contract(Project.abi, contractAddress);
+    const getContributions = await projectConnector.getPastEvents(
+      "FundingReceived",
+      {
+        fromBlock: 0,
+        toBlock: "latest",
+      }
+    );
+    onSuccess(groupContributors(getContributions));
+  } catch (error) {
+    onError(error);
+  }
 };
