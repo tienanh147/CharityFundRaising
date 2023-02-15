@@ -6,6 +6,7 @@ import {
   projectDataFormatter,
   withdrawRequestDataFormatter,
   groupContributors,
+  groupContributionByProject,
 } from "../helper/helper";
 
 const charityFundingContractAddress =
@@ -264,4 +265,20 @@ export const getContributors = async (
   } catch (error) {
     onError(error);
   }
+};
+
+//Get my contributions
+export const getMyContributionList = async (
+  charityFundingContract,
+  account
+) => {
+  const getContributions = await charityFundingContract.getPastEvents(
+    "ContributionReceived",
+    {
+      filter: { contributor: account },
+      fromBlock: 0,
+      toBlock: "latest",
+    }
+  );
+  return groupContributionByProject(getContributions);
 };
