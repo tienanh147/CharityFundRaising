@@ -218,3 +218,31 @@ export const voteWithdrawRequest = async (web3, data, onSuccess, onError) => {
       onError(error.message);
     });
 };
+
+// Withdraw requested amount
+export const withdrawAmount = async (
+  web3,
+  dispatch,
+  data,
+  onSuccess,
+  onError
+) => {
+  const { contractAddress, reqId, account, amount } = data;
+  var projectConnector = new web3.eth.Contract(Project.abi, contractAddress);
+  await projectConnector.methods
+    .withdrawRequestedAmount(reqId)
+    .send({ from: account })
+    .on("receipt", function (receipt) {
+      console.log(receipt);
+      dispatch(
+        actions.withdrawContractBalance({
+          contractAddress: contractAddress,
+          withdrawAmount: amount,
+        })
+      );
+      onSuccess();
+    })
+    .on("error", function (error) {
+      onError(error.message);
+    });
+};

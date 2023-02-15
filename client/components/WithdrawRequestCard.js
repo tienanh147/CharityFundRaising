@@ -30,8 +30,21 @@ const WithdrawRequestCard = ({
       account: account,
       amount: props.amount,
     };
-    toastSuccess(data)
-    setBtnLoader(false);
+    const onSuccess = () => {
+      setBtnLoader(false);
+      const filteredReq = withdrawReq.filter(
+        (data) => data.requestId === props.requestId
+      );
+      var filteredVal = filteredReq[0];
+      filteredVal.status = "Completed";
+      setWithdrawReq(withdrawReq);
+      toastSuccess(`Vote successfully added for request id ${reqId}`);
+    };
+    const onError = (message) => {
+      setBtnLoader(false);
+      toastError(message);
+    };
+    withdrawAmount(web3, dispatch, data, onSuccess, onError);
   };
 
   const vote = (reqId) => {
