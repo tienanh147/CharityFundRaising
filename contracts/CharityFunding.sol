@@ -11,7 +11,7 @@ contract CharityFunding {
 
     event ProjectStarted(
         address projectContractAddress,
-        address creator,
+        address projectStarter,
         uint256 minContribution,
         uint256 projectDeadline,
         uint256 goalAmount,
