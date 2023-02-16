@@ -7,7 +7,10 @@ import authWrapper from "../../helper/authWrapper";
 import {
   getAllWithdrawRequest,
   getContributors,
+  getRefundSuccessfulList,
 } from "../../redux/interactions";
+
+import { formatRefundRequests } from "../../helper/helper";
 import WithdrawRequestCard from "../../components/WithdrawRequestCard";
 
 const ProjectDetails = () => {
@@ -18,9 +21,11 @@ const ProjectDetails = () => {
 
   const projectsList = useSelector((state) => state.projectReducer.projects);
   const filteredProject = projectsList?.filter((data) => data.address === id);
-  const [contributors, setContributors] = useState(null)
+  const [contributors, setContributors] = useState(null);
 
   const [withdrawReq, setWithdrawReq] = useState(null);
+
+  const [refundRequests, setRefundRequests] = useState(null);
 
   useEffect(() => {
     if (id) {
@@ -36,6 +41,11 @@ const ProjectDetails = () => {
         setWithdrawReq(data);
       };
       getAllWithdrawRequest(web3, id, loadWithdrawRequests);
+
+      const loadRefundRequests = (data) => {
+        setRefundRequests(formatRefundRequests(data));
+      };
+      getRefundSuccessfulList(web3, id, loadRefundRequests, console.log);
     }
   }, [id]);
 
@@ -46,6 +56,20 @@ const ProjectDetails = () => {
       setWithdrawReq([data]);
     }
   };
+
+  if (
+    contributors?.findIndex((c) => c.contributor == account) != -1 &&
+    filteredProject
+  ) {
+    console.log("contributorView");
+    filteredProject[0].contributorView = true;
+    if (filteredProject[0].state == "Expired") {
+      // getRefundSuccessfulList(web3, id, setRefundRequests, console.log);
+      if (refundRequests?.findIndex((r) => r.contributor == account) == -1) {
+        filteredProject[0].canRequestRefund = true;
+      }
+    }
+  }
 
   return (
     <div className="px-2 py-4 flex flex-col lg:px-12 lg:flex-row ">

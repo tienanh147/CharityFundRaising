@@ -86,7 +86,7 @@ contract Project {
     address reciptent
   );
 
-  event RefundRequestSuccessful(uint256 amount);
+  event RefundRequestSuccessful(address contributor, uint256 amount);
 
   // @dev Create project
   // @return null
@@ -113,7 +113,9 @@ contract Project {
 
   function contribute(
     address _contributor
-  ) public payable validateExpiry(State.Fundraising) {
+  ) public payable 
+  validateExpiry(State.Fundraising) 
+  {
     require(
       msg.value >= minimumContribution,
       "Contribution amount is too low !"
@@ -149,7 +151,9 @@ contract Project {
   // @dev Request refunt if funding expired
   // @return boolean
 
-  function requestRefund() public validateExpiry(State.Expired) {
+  function requestRefund() public {
+    require(state == State.Expired, "Not Expired");
+
     require(
       contributiors[msg.sender] > 0,
       "You dont have any contributed amount !"
@@ -158,7 +162,7 @@ contract Project {
     uint256 refundAmount = contributiors[msg.sender];
     user.transfer(refundAmount);
     contributiors[msg.sender] = 0;
-    emit RefundRequestSuccessful(refundAmount);
+    emit RefundRequestSuccessful(msg.sender, refundAmount);
   }
 
   // @dev Get contract details

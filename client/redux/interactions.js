@@ -282,3 +282,45 @@ export const getMyContributionList = async (
   );
   return groupContributionByProject(getContributions);
 };
+export const requestRefund = async (
+  web3,
+  contractAddress,
+  data,
+  onSuccess,
+  onError
+) => {
+  const { account } = data;
+  var projectConnector = new web3.eth.Contract(Project.abi, contractAddress);
+  await projectConnector.methods
+    .requestRefund()
+    .send({ from: account })
+    .on("receipt", function (receipt) {
+      onSuccess(
+        weiToEther(receipt.events.RefundRequestSuccessful.returnValues.amount)
+      );
+    })
+    .on("error", function (error) {
+      onError(error.message);
+    });
+};
+
+export const getRefundSuccessfulList = async (
+  web3,
+  contractAddress,
+  onSuccess,
+  onError
+) => {
+  try {
+    var projectConnector = new web3.eth.Contract(Project.abi, contractAddress);
+    const getRefundList = await projectConnector.getPastEvents(
+      "RefundRequestSuccessful",
+      {
+        fromBlock: 0,
+        toBlock: "latest",
+      }
+    );
+    onSuccess(getRefundList);
+  } catch (error) {
+    onError(error);
+  }
+};

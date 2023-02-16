@@ -114,6 +114,20 @@ const formatProjectContributions = (contributions) => {
 
 export const groupContributionByProject = (contributions) => {
   const contributionList = formatProjectContributions(contributions);
-  //const contributionGroupByProject = _.map(_.groupBy(contributionList, 'projectAddress'), (o,projectAddress,address) => { return {projectAddress:projectAddress, contributor: address,amount: _.sumBy(o,'amount') }})
-  return contributionList;
+  const contributionGroupByProject = _.map(_.groupBy(contributionList, 'projectAddress'), (o,projectAddress,address) => { return {projectAddress:projectAddress, contributor: address,amount: _.sumBy(o,'amount') }})
+  return contributionGroupByProject;
 };
+
+
+export const formatRefundRequests = (refundReqs) => {
+  const formattedData = refundReqs.map((data) => {
+    return {
+      contributor: data.returnValues.contributor,
+      amount: Number(weiToEther(data.returnValues.amount)),
+    };
+  });
+  return formattedData;
+};
+
+
+
