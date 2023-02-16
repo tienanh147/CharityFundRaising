@@ -167,7 +167,7 @@ const FundRiserCard = ({ props, pushWithdrawRequests }) => {
               <p className="text-sm font-bold font-sans text-gray-600 ">
                 {props.contractBalance} ETH{" "}
               </p>
-              {props.creator === account && props.state == "Successful" ? (
+              {props.creator === account && props.state == "Successful" && props.contractBalance > 0? (
                 <>
                   <label className="text-sm text-gray-700 font-semibold">
                     Withdraw request :
