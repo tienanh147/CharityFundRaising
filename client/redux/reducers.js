@@ -59,13 +59,26 @@ export const projectReducer = (state = initialState, action) => {
       };
     case types.INCREASE_PROGRESS:
       const { projectId, amount } = action.payload;
+
       var updatedState = state.projects.map((data) => {
         if (data.address === projectId) {
+          data.currentAmount =
+            Number(data.currentAmount) + Number(weiToEther(amount));
+          data.contractBalance = Number(data.contractBalance) + Number(weiToEther(amount));
+          if (Number(data.currentAmount) >= Number(data.goalAmount))
+            data.state = "Successful";
           data["progress"] = Math.round(
-            ((Number(data.currentAmount) + Number(weiToEther(amount))) /
-              Number(data.goalAmount)) *
-              100
+            (Number(data.currentAmount) / Number(data.goalAmount)) * 100
           );
+        }
+        return data;
+      });
+    case types.WITHDRAW_BALANCE:
+      const { contractAddress, withdrawAmount } = action.payload;
+      var updatedState = state.projects.map((data) => {
+        if (data.address === contractAddress) {
+          data.contractBalance =
+            Number(data.contractBalance) - Number(withdrawAmount);
         }
         return data;
       });
@@ -73,12 +86,11 @@ export const projectReducer = (state = initialState, action) => {
         ...state,
         projects: updatedState,
       };
-    
+
     default:
       return state;
   }
 };
-
 
 export default combineReducers({
   web3Reducer,
