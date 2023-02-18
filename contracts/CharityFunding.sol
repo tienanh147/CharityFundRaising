@@ -27,7 +27,9 @@ contract CharityFunding {
         uint256 contributedAmount,
         address indexed contributor
     );
-
+    mapping(address => address[]) public projectsContributedOfAccount;
+    mapping(address => mapping(address => uint256))
+        public contributorProjectAmount;
     Project[] private projects;
 
     // @dev Anyone can start a fund rising
@@ -80,13 +82,13 @@ contract CharityFunding {
     //     }
     //     return projectAddressList;
     // }
-    
+
     // @dev User can contribute
     // @return null
 
     function contribute(address _projectAddress) public payable {
         // uint256 minContributionAmount = Project(_projectAddress)
-            // .minimumContribution();
+        // .minimumContribution();
         // Project.State projectState = Project(_projectAddress).state();
         // require(projectState == Project.State.Fundraising, "Invalid state");
         // require(
@@ -95,6 +97,24 @@ contract CharityFunding {
         // );
         // Call function
         Project(_projectAddress).contribute{value: msg.value}(msg.sender);
+        //  if (contributiors[msg.sender] == 0) {
+        // contributiorAddresses[noOfContributers] = _contributor;
+        // noOfContributers++;
+        // }
+        bool contributedInThisProject = false;
+        for (
+            uint256 i = 0;
+            i < projectsContributedOfAccount[msg.sender].length;
+            i++
+        ) {
+            if (projectsContributedOfAccount[msg.sender][i] == _projectAddress) {
+                contributedInThisProject = true;
+                break;
+            }
+        }
+        if (!contributedInThisProject)
+            projectsContributedOfAccount[msg.sender].push(_projectAddress);
+        contributorProjectAmount[msg.sender][_projectAddress] += msg.value;
         // Trigger event
         emit ContributionReceived(_projectAddress, msg.value, msg.sender);
     }
