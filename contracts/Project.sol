@@ -41,10 +41,18 @@ contract Project {
   string public projectDes;
   State public state = State.Fundraising;
 
-  mapping(address => uint) public contributiors;
+  mapping(address => uint256) public contributiors;
+  mapping(uint256 => address) public contributiorAddresses;
+
   mapping(uint256 => WithdrawRequest) public withdrawRequests;
 
+  // mapping(uint256 => WithdrawRequest) public withdrawRequests;
+
+
+
   uint256 public numOfWithdrawRequests = 0;
+  // uint256 public numOfRefundRequests = 0;
+
 
   // Modifiers
   modifier isCreator() {
@@ -113,14 +121,13 @@ contract Project {
 
   function contribute(
     address _contributor
-  ) public payable 
-  validateExpiry(State.Fundraising) 
-  {
+  ) public payable validateExpiry(State.Fundraising) {
     require(
       msg.value >= minimumContribution,
       "Contribution amount is too low !"
     );
     if (contributiors[_contributor] == 0) {
+      contributiorAddresses[noOfContributers] = _contributor;
       noOfContributers++;
     }
     contributiors[_contributor] += msg.value;
@@ -259,5 +266,13 @@ contract Project {
     requestDetails.voters[msg.sender] = true;
     requestDetails.noOfVotes += 1;
     emit WithdrawVote(msg.sender, requestDetails.noOfVotes);
+  }
+
+  function getAllContributorAddress() public view returns (address[] memory) {
+    address[] memory ret = new address[](noOfContributers);
+    for (uint i = 0; i < noOfContributers; i++) {
+      ret[i] = contributiorAddresses[i];
+    }
+    return ret;
   }
 }
