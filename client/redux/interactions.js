@@ -9,9 +9,12 @@ import {
   groupContributionByProject,
 } from "../helper/helper";
 
+// const charityFundingContractAddress =
+//   "0xdEAC32b4c0C0034C83090B44b8CFA95C564d34F6";
+// const charityFundingContractAddress =
+//   "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const charityFundingContractAddress =
-  "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-
+  "0x414f37A63f3A3EC693A680Ca6F7F0A64c7A7B9BF";
 //Load web3
 export const loadWeb3 = async (dispatch) => {
   const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");

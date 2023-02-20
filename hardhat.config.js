@@ -18,9 +18,13 @@ module.exports = {
       chainId: 31337
 
     },
-    // rinkeby: {
-    //   url: `https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_KEY}`,
-    //   accounts: [`0x${ACCOUNT_PRIVATE_KEY}`]
-    // }
+    // testnet: {
+    //   url: "https://data-seed-prebsc-1-s1.binance.org:8545",
+    //   chainId: 97,
+    //   gasPrice: 20000000000,
+    //   accounts: ["01f8e4206705371a500dab8545186974abf8d1d697ffd6647353ceeb9cec6118"]
+    // },
+
+
   },
 };
