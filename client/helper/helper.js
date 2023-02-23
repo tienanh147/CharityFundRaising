@@ -1,7 +1,6 @@
 import moment from "moment";
 import web3 from "web3";
 // import _ from "lodash";
-
 export const weiToEther = (num) => {
   return web3.utils.fromWei(num, "ether");
 };
@@ -59,8 +58,12 @@ export const connectWithWallet = async (onSuccess) => {
       });
   } else {
     window.alert(
-      "Non-Ethereum browser detected. You should consider trying MetaMask!"
+      "Non-Ethereum browser detected. You should consider trying MetaMask! Direct to download page?"
     );
+    // toastError("Non-Ethereum browser detected. You should consider trying MetaMask! We will direct you to download page in 3s")
+    // setTimeout(() => {
+    window.open("https://metamask.io/");
+    // }, 1000);
   }
 };
 
@@ -77,7 +80,7 @@ export const withdrawRequestDataFormatter = (data) => {
     status: data.isCompleted ? "Completed" : "Pending",
     desc: data.description,
     reciptant: data.reciptent,
-    proofFile: data.proofFile
+    proofFile: data.proofFile,
   };
 };
 
@@ -115,10 +118,18 @@ const formatProjectContributions = (contributions) => {
 
 export const groupContributionByProject = (contributions) => {
   const contributionList = formatProjectContributions(contributions);
-  const contributionGroupByProject = _.map(_.groupBy(contributionList, 'projectAddress'), (o,projectAddress,address) => { return {projectAddress:projectAddress, contributor: address,amount: _.sumBy(o,'amount') }})
+  const contributionGroupByProject = _.map(
+    _.groupBy(contributionList, "projectAddress"),
+    (o, projectAddress, address) => {
+      return {
+        projectAddress: projectAddress,
+        contributor: address,
+        amount: _.sumBy(o, "amount"),
+      };
+    }
+  );
   return contributionGroupByProject;
 };
-
 
 export const formatRefundRequests = (refundReqs) => {
   const formattedData = refundReqs.map((data) => {
@@ -129,6 +140,3 @@ export const formatRefundRequests = (refundReqs) => {
   });
   return formattedData;
 };
-
-
-

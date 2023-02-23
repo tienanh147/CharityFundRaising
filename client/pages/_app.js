@@ -30,7 +30,9 @@ function MyApp({ Component, pageProps }) {
       web3,
       dispatch
     );
-    await getAllFunding(charityFundingContract, web3, dispatch);
+    try {
+      await getAllFunding(charityFundingContract, web3, dispatch);
+    } catch {}
   };
 
   Router.events.on("routeChangeStart", () => NProgress.start());
@@ -39,9 +41,11 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     // listen for account changes
-    window.ethereum.on("accountsChanged", chainOrAccountChangedHandler);
-    // Listen for chain change
-    window.ethereum.on("chainChanged", chainOrAccountChangedHandler);
+    try {
+      window.ethereum.on("accountsChanged", chainOrAccountChangedHandler);
+      // Listen for chain change
+      window.ethereum.on("chainChanged", chainOrAccountChangedHandler);
+    } catch {}
   }, []);
 
   return (

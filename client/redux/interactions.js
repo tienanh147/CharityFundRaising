@@ -16,25 +16,29 @@ import {
 // "0x414f37A63f3A3EC693A680Ca6F7F0A64c7A7B9BF";
 
 const charityFundingContractAddress =
-"0x9a48634AA12B9632E17c557821856eAb07BEDA44";
+  "0x9a48634AA12B9632E17c557821856eAb07BEDA44";
 //Load web3
 export const loadWeb3 = async (dispatch) => {
-  const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+  const web3 = new Web3(Web3.givenProvider);
   dispatch(actions.web3Loaded(web3));
   return web3;
 };
 
 // Load connected wallet
 export const loadAccount = async (web3, dispatch) => {
-  const account = await web3.eth.getAccounts();
-  const network = await web3.eth.net.getId();
+  try {
+    const account = await web3.eth.getAccounts();
+    const network = await web3.eth.net.getId();
 
-  //   if (network !== Number(process.env.REACT_APP_NETWORK_ID)) {
-  //     alert("Contract not deployed in this network !");
-  //   }
-  dispatch(actions.walletAddressLoaded(account[0]));
-  localStorage.setItem("ADDRESS", account[0]);
-  return account;
+    //   if (network !== Number(process.env.REACT_APP_NETWORK_ID)) {
+    //     alert("Contract not deployed in this network !");
+    //   }
+    dispatch(actions.walletAddressLoaded(account[0]));
+    localStorage.setItem("ADDRESS", account[0]);
+    return account;
+  } catch (error) {
+    return "";
+  }
 };
 
 //Connect with crowd funding contract
