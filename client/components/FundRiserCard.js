@@ -23,14 +23,21 @@ const FundRiserCard = ({ props, pushWithdrawRequests }) => {
   const [btnLoader, setBtnLoader] = useState(false);
   const [amount, setAmount] = useState(0);
   const [withDrawDesc, setWithDrawDesc] = useState("");
-
+  const [proofFile, setProofFile] = useState(null);
+  const [createObjectURL, setCreateObjectURL] = useState(null);
   const dispatch = useDispatch();
   const charityFundingContract = useSelector(
     (state) => state.fundingReducer.contract
   );
   const account = useSelector((state) => state.web3Reducer.account);
   const web3 = useSelector((state) => state.web3Reducer.connection);
-
+  const uploadToClient = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      const i = event.target.files[0];
+      setProofFile(i);
+      setCreateObjectURL(URL.createObjectURL(i));
+    }
+  };
   const contributeAmount = (projectId, minContribution) => {
     if (parseInt(amount) < parseInt(minContribution)) {
       toastError(
@@ -68,10 +75,13 @@ const FundRiserCard = ({ props, pushWithdrawRequests }) => {
       amount: contributionAmount,
       recipient: account,
       account: account,
+      proofFile: proofFile
     };
     const onSuccess = (data) => {
       setBtnLoader(false);
       setAmount(0);
+      setCreateObjectURL(null);
+      setProofFile(null)
       if (pushWithdrawRequests) {
         pushWithdrawRequests(data);
       }
@@ -112,7 +122,7 @@ const FundRiserCard = ({ props, pushWithdrawRequests }) => {
       </p>
       <p className="font-sans text-sm text-stone-800 tracking-tight">
         <strong>Creator:</strong>{" "}
-        <a href={`projects?creator=${props.creator}`}> {props.creator} </a>
+        <a href={`/projects?creator=${props.creator}`}> {props.creator} </a>
       </p>
       <div className="flex flex-col lg:flex-row">
         <div className="inner-card my-6 w-full lg:w-2/5">
@@ -167,7 +177,7 @@ const FundRiserCard = ({ props, pushWithdrawRequests }) => {
               <p className="text-sm font-bold font-sans text-gray-600 ">
                 {props.contractBalance} ETH{" "}
               </p>
-              {props.creator === account && props.state == "Successful" && props.contractBalance > 0? (
+              {props.creator === account && props.state == "Successful" && props.contractBalance > 0?  (
                 <>
                   <label className="text-sm text-gray-700 font-semibold">
                     Withdraw request :
@@ -181,12 +191,15 @@ const FundRiserCard = ({ props, pushWithdrawRequests }) => {
                       disabled={btnLoader === props.address}
                       className="input rounded-l-md"
                     />
-                    <button
-                      className="button"
-                      onClick={() => requestForWithdraw(props.address)}
-                    >
-                      {btnLoader === props.address ? "Loading..." : "Withdraw"}
-                    </button>
+                    <input
+                      id="proof-file"
+                      type="file"
+                      accept="image/jpeg"
+                      placeholder="upload proof"
+                      onChange={uploadToClient} 
+                      disabled={btnLoader === props.address}
+                      className="input rounded-l-md"
+                    />
                   </div>
                   <textarea
                     type="text"
@@ -197,27 +210,31 @@ const FundRiserCard = ({ props, pushWithdrawRequests }) => {
                     disabled={btnLoader === props.address}
                     className="input rounded-l-md"
                   />
+                  <img src={createObjectURL} />
+                  <button
+                    className="button"
+                    onClick={() => requestForWithdraw(props.address)}
+                  >
+                    {btnLoader === props.address ? "Loading..." : "Withdraw"}
+                  </button>
                 </>
               ) : (
                 ""
               )}
 
-              {
-                props.state == "Expired" &&
-                props.contributorView == true ? (
-                  <div className="flex flex-row">
-                    <button
-                      className="button refundButton"
-                      onClick={() => requestForRefund(props.address)}
-                      disabled={btnLoader === props.address || !props.canRequestRefund}
-                    >
-                      Refund Now
-                    </button>
-                  </div>
-                ) : (
-                  ""
-                )
-              }
+              {props.state == "Expired" && props.contributorView == true ? (
+                <div className="flex flex-row">
+                  <button
+                    className="button refundButton"
+                    onClick={() => requestForRefund(props.address)}
+                    disabled={btnLoader === props.address}
+                  >
+                    Refund Now
+                  </button>
+                </div>
+              ) : (
+                ""
+              )}
             </>
           )}
         </div>

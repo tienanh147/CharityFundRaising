@@ -77,6 +77,7 @@ export const withdrawRequestDataFormatter = (data) => {
     status: data.isCompleted ? "Completed" : "Pending",
     desc: data.description,
     reciptant: data.reciptent,
+    proofFile: data.proofFile
   };
 };
 

@@ -17,13 +17,10 @@ const Projects = () => {
   return (
     <div className="px-2 py-4 flex flex-col lg:px-12 lg:flex-row flex-wrap lg:px-12">
       {/* <div className="lg:w-7/12 my-2 lg:my-0 lg:mx-2"> */}
-      {projectsList !== undefined ? (
+      {projectsList ? (
         projectsList.length > 0 ? (
           projectsList.map((data, i) => (
-            <div
-              className="my-2 flex flex-row w-full lg:w-1/2"
-              key={i}
-            >
+            <div className="my-2 flex flex-row w-full lg:w-1/2" key={i}>
               <FundRiserCard props={data} key={i} />
             </div>
           ))

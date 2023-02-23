@@ -1,49 +1,58 @@
-import {useEffect} from 'react'
-import '../styles/globals.css'
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify';
-import {wrapper} from '../redux/store'
-import { useDispatch } from 'react-redux';
-import { getAllFunding, loadAccount, loadCharityFundingContract, loadWeb3, subscribeCharityFundingEvents } from '../redux/interactions';
-import { Router } from 'next/router';
-import NProgress from 'nprogress'
+import { useEffect } from "react";
+import "../styles/globals.css";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import { wrapper } from "../redux/store";
+import { useDispatch } from "react-redux";
+import {
+  getAllFunding,
+  loadAccount,
+  loadCharityFundingContract,
+  loadWeb3,
+  subscribeCharityFundingEvents,
+} from "../redux/interactions";
+import { Router } from "next/router";
+import NProgress from "nprogress";
 import "nprogress/nprogress.css";
-import { chainOrAccountChangedHandler } from '../helper/helper';
+import { chainOrAccountChangedHandler } from "../helper/helper";
 
 function MyApp({ Component, pageProps }) {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    loadBlockchain()
-  }, [])
-  
+    loadBlockchain();
+  }, []);
 
-  const loadBlockchain = async() =>{
-      const web3 = await loadWeb3(dispatch)
-      const account = await loadAccount(web3,dispatch)
-      const charityFundingContract = await loadCharityFundingContract(web3,dispatch)
-      await getAllFunding(charityFundingContract,web3,dispatch)
-  }
+  const loadBlockchain = async () => {
+    const web3 = await loadWeb3(dispatch);
+    const account = await loadAccount(web3, dispatch);
+    const charityFundingContract = await loadCharityFundingContract(
+      web3,
+      dispatch
+    );
+    await getAllFunding(charityFundingContract, web3, dispatch);
+  };
 
-  Router.events.on("routeChangeStart",()=> NProgress.start())
-  Router.events.on("routeChangeComplete",()=> NProgress.done())
-  Router.events.on("routeChangeError",()=> NProgress.done())
-  
+  Router.events.on("routeChangeStart", () => NProgress.start());
+  Router.events.on("routeChangeComplete", () => NProgress.done());
+  Router.events.on("routeChangeError", () => NProgress.done());
+
   useEffect(() => {
     // listen for account changes
-    window.ethereum.on('accountsChanged', chainOrAccountChangedHandler);
+    window.ethereum.on("accountsChanged", chainOrAccountChangedHandler);
     // Listen for chain change
-    window.ethereum.on('chainChanged', chainOrAccountChangedHandler);
-  }, [])
-  
-  
+    window.ethereum.on("chainChanged", chainOrAccountChangedHandler);
+  }, []);
+
   return (
     <>
-      <ToastContainer/>
+      <header>
+        <script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
+      </header>
+      <ToastContainer />
       <Component {...pageProps} />
     </>
-  )
+  );
 }
 
-export default wrapper.withRedux(MyApp)
+export default wrapper.withRedux(MyApp);

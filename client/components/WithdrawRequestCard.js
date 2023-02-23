@@ -115,6 +115,8 @@ const WithdrawRequestCard = ({
           )}
         </div>
       </div>
+
+      <img src={props.proofFile} />
     </div>
   );
 };

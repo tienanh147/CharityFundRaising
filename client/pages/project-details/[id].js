@@ -45,7 +45,7 @@ const ProjectDetails = () => {
       const loadRefundRequests = (data) => {
         setRefundRequests(formatRefundRequests(data));
       };
-      getRefundSuccessfulList(web3, id, loadRefundRequests, console.log);
+      // getRefundSuccessfulList(web3, id, loadRefundRequests, console.log);
     }
   }, [id]);
 
@@ -63,12 +63,12 @@ const ProjectDetails = () => {
   ) {
     console.log("contributorView");
     filteredProject[0].contributorView = true;
-    if (filteredProject[0].state == "Expired") {
-      // getRefundSuccessfulList(web3, id, setRefundRequests, console.log);
-      if (refundRequests?.findIndex((r) => r.contributor == account) == -1) {
-        filteredProject[0].canRequestRefund = true;
-      }
-    }
+    // if (filteredProject[0].state == "Expired") {
+    //   // getRefundSuccessfulList(web3, id, setRefundRequests, console.log);
+    //   if (refundRequests?.findIndex((r) => r.contributor == account) == -1) {
+    //     filteredProject[0].canRequestRefund = true;
+    //   }
+    // }
   }
 
   return (

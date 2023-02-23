@@ -27,6 +27,7 @@ contract Project {
     mapping(address => bool) voters;
     bool isCompleted;
     address payable reciptent;
+    string proofFile;
   }
 
   // Variables
@@ -80,7 +81,8 @@ contract Project {
     uint256 amount,
     uint256 noOfVotes,
     bool isCompleted,
-    address reciptent
+    address reciptent,
+    string proofFile
   );
   // Event that will be emitted whenever contributor vote for withdraw request
   event WithdrawVote(address voter, uint totalVote);
@@ -209,26 +211,30 @@ contract Project {
   function createWithdrawRequest(
     string memory _description,
     uint256 _amount,
-    address payable _reciptent
+    address payable _reciptent,
+    string memory _proofFile
   ) public isCreator validateExpiry(State.Successful) {
     WithdrawRequest storage newRequest = withdrawRequests[
       numOfWithdrawRequests
     ];
-    numOfWithdrawRequests++;
 
     newRequest.description = _description;
     newRequest.amount = _amount;
     newRequest.noOfVotes = 0;
     newRequest.isCompleted = false;
     newRequest.reciptent = _reciptent;
-
+    newRequest.proofFile = _proofFile;
+    
+    numOfWithdrawRequests++;
     emit WithdrawRequestCreated(
       numOfWithdrawRequests,
       _description,
       _amount,
       0,
       false,
-      _reciptent
+      _reciptent,
+     _proofFile
+
     );
   }
 
