@@ -257,14 +257,24 @@ export const getContributors = async (
 ) => {
   try {
     var projectConnector = new web3.eth.Contract(Project.abi, contractAddress);
-    const getContributions = await projectConnector.getPastEvents(
-      "FundingReceived",
-      {
-        fromBlock: 0,
-        toBlock: "latest",
-      }
+    const listContributorAddress = await projectConnector.methods
+      .getAllContributorAddress()
+      .call();
+
+    let listContributionDetail = [];
+    await Promise.all(
+      listContributorAddress.map(async (contributorAddress) => {
+        const amountOfContribution = await projectConnector.methods
+          .contributiors(contributorAddress)
+          .call();
+        listContributionDetail.push({
+          contributor: contributorAddress,
+          amount: Number(weiToEther(amountOfContribution)),
+        });
+      })
     );
-    onSuccess(groupContributors(getContributions));
+
+    onSuccess(listContributionDetail);
   } catch (error) {
     onError(error);
   }
