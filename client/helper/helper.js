@@ -1,6 +1,6 @@
 import moment from "moment";
 import web3 from "web3";
-import _ from "lodash";
+// import _ from "lodash";
 
 export const weiToEther = (num) => {
   return web3.utils.fromWei(num, "ether");
