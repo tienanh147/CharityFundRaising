@@ -58,17 +58,18 @@ const ProjectDetails = () => {
   };
 
   if (
-    contributors?.findIndex((c) => c.contributor == account) != -1 &&
+    contributors &&
+    contributors.findIndex((c) => c.contributor == account) != -1 &&
     filteredProject
   ) {
-    console.log("contributorView");
+    // console.log("contributorView");
     filteredProject[0].contributorView = true;
-    // if (filteredProject[0].state == "Expired") {
-    //   // getRefundSuccessfulList(web3, id, setRefundRequests, console.log);
-    //   if (refundRequests?.findIndex((r) => r.contributor == account) == -1) {
-    //     filteredProject[0].canRequestRefund = true;
-    //   }
-    // }
+    if (filteredProject[0].state == "Expired") {
+      // getRefundSuccessfulList(web3, id, setRefundRequests, console.log);
+      // if (refundRequests?.findIndex((r) => r.contributor == account) == -1) {
+      filteredProject[0].canRequestRefund = true;
+      // }
+    }
   }
 
   return (

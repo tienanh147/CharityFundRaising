@@ -222,7 +222,7 @@ const FundRiserCard = ({ props, pushWithdrawRequests }) => {
                 ""
               )}
 
-              {props.state == "Expired" && props.contributorView == true ? (
+              {props.state == "Expired" && props.contributorView == true && props.canRequestRefund == true ? (
                 <div className="flex flex-row">
                   <button
                     className="button refundButton"
