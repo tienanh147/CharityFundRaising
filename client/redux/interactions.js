@@ -7,7 +7,6 @@ import {
   withdrawRequestDataFormatter,
   weiToEther,
 } from "../helper/helper";
-
 // const charityFundingContractAddress =
 //   "0xdEAC32b4c0C0034C83090B44b8CFA95C564d34F6";
 // const charityFundingContractAddress =
@@ -20,6 +19,7 @@ const charityFundingContractAddress =
 //Load web3
 export const loadWeb3 = async (dispatch) => {
   const web3 = new Web3(Web3.givenProvider);
+  // console.log(Web3.givenProvider);
   dispatch(actions.web3Loaded(web3));
   return web3;
 };
@@ -29,10 +29,9 @@ export const loadAccount = async (web3, dispatch) => {
   try {
     const account = await web3.eth.getAccounts();
     const network = await web3.eth.net.getId();
-
-    //   if (network !== Number(process.env.REACT_APP_NETWORK_ID)) {
-    //     alert("Contract not deployed in this network !");
-    //   }
+    if (network != process.env.NEXT_PUBLIC_NETWORK_ID) {
+      alert("Contract not deployed in this network! Please add BNB testnet: {'url_rpc': 'https://data-seed-prebsc-1-s1.binance.org:8545/' , 'chainID': 97}");
+    }
     dispatch(actions.walletAddressLoaded(account[0]));
     localStorage.setItem("ADDRESS", account[0]);
     return account;
