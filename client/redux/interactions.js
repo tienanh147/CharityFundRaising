@@ -6,7 +6,7 @@ import {
   projectDataFormatter,
   withdrawRequestDataFormatter,
   groupContributors,
-  groupContributionByProject,
+  weiToEther,
 } from "../helper/helper";
 
 // const charityFundingContractAddress =
@@ -285,15 +285,41 @@ export const getMyContributionList = async (
   charityFundingContract,
   account
 ) => {
-  const getContributions = await charityFundingContract.getPastEvents(
-    "ContributionReceived",
-    {
-      filter: { contributor: account },
-      fromBlock: 0,
-      toBlock: "latest",
+  let projectsContributed = [];
+  for (let i = 0; i < 10 ** 10; i++) {
+    try {
+      const projectAddress = await charityFundingContract.methods
+        .projectsContributedOfAccount(account, i)
+        .call();
+      projectsContributed.push(projectAddress);
+    } catch (error) {
+      break;
     }
+  }
+
+  let listContributionDetail = [];
+  await Promise.all(
+    projectsContributed.map(async (projectAddress) => {
+      const amountOfContribution = await charityFundingContract.methods
+        .contributorProjectAmount(account, projectAddress)
+        .call();
+      listContributionDetail.push({
+        projectAddress: projectAddress,
+        amount: Number(weiToEther(amountOfContribution)),
+        contributor: account,
+      });
+    })
   );
-  return groupContributionByProject(getContributions);
+  return listContributionDetail;
+  //   const getContributions = await charityFundingContract.getPastEvents(
+  //   "ContributionReceived",
+  //   {
+  //     filter: { contributor: account },
+  //     fromBlock: 0,
+  //     toBlock: "latest",
+  //   }
+  // );
+  // return groupContributionByProject(getContributions);
 };
 export const requestRefund = async (
   web3,
